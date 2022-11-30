@@ -10,14 +10,14 @@ YAHOO_API_URL = "https://map.yahooapis.jp/search/local/V1/localSearch"
 
 
 @st.experimental_memo
-def retrieve_local_search_result(query: str) -> dict[Any]:
+def retrieve_local_search_result(query: str, latlon: tuple[int, int], dist: int) -> dict[Any]:
     params = {
         "appid": YAHOO_APPLICATION_ID,
         "output": "json",
         "query": query,
-        "lat": 43.0632374,
-        "lon": 141.2989056,
-        "dist": 4,
+        "lat": latlon[0],
+        "lon": latlon[1],
+        "dist": dist,
         "detail": "standard",
         "results": 100,
         "start": 1}
@@ -38,11 +38,16 @@ def retrieve_local_search_result(query: str) -> dict[Any]:
 
 
 def to_dataframe(search_result: dict[Any]) -> pd.DataFrame:
-    data = []
+    rows = []
     for f in search_result["Feature"]:
-        address = f['Property']['Address']
-        data.append([f['Name'], address, 1 if "宮の森" in address else 0])
-    return pd.DataFrame(
-        data=np.array(data),
-        columns=("name", "address", "is_in")
-    )
+        address = f["Property"]["Address"].removeprefix("北海道")
+        is_in = 1 if "宮の森" in address else 0
+        lon, lat = f["Geometry"]["Coordinates"].split(",")
+        rows.append({
+            "name": f["Name"],
+            "address": address,
+            "lat": float(lat),
+            "lon": float(lon),
+            "is_in": is_in
+        })
+    return pd.DataFrame.from_dict(rows)

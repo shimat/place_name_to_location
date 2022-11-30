@@ -34,14 +34,15 @@ def retrieve_local_search_result(query: str, latlon: tuple[int, int], dist: int)
         r = requests.get(YAHOO_API_URL, params=params)
         r.raise_for_status()
         j["Feature"].extend(r.json()["Feature"])
+    print("request done")
     return j
 
 
-def to_dataframe(search_result: dict[Any]) -> pd.DataFrame:
+def to_dataframe(search_result: dict[Any], area_name: str) -> pd.DataFrame:
     rows = []
     for f in search_result["Feature"]:
         address = f["Property"]["Address"].removeprefix("北海道")
-        is_in = 1 if "宮の森" in address else 0
+        is_in = 1 if area_name in address else 0
         lon, lat = f["Geometry"]["Coordinates"].split(",")
         rows.append({
             "name": f["Name"],

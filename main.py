@@ -5,7 +5,8 @@ import streamlit as st
 from streamlit_folium import folium_static
 from typing import Any
 from data_loader import retrieve_local_search_result
-from constants import CENTER_POSITIONS, CONTOURS, SEARCH_DISTANCE, ZOOM
+from constants import ContourData, CENTER_POSITIONS, CONTOURS, SEARCH_DISTANCE, ZOOM
+
 
 def add_spot_markers(df: pd.DataFrame, map: folium.Map):
     for _, r in df.iterrows():
@@ -15,9 +16,10 @@ def add_spot_markers(df: pd.DataFrame, map: folium.Map):
             draggable=False
         ).add_to(map)
 
-def add_contour_lines(contours: tuple[tuple[tuple[float, float]]], map: folium.Map):
+
+def add_contour_lines(contours: ContourData, map: folium.Map):
     colormap = ['r', "b", "g", "orange"]
-    for contour in contours:
+    for contour in contours.coordinates_list:
         if not contour:
             continue
         folium.ColorLine(
@@ -27,6 +29,7 @@ def add_contour_lines(contours: tuple[tuple[tuple[float, float]]], map: folium.M
             weight=7
         ).add_to(map)
         colormap.append(colormap.pop(0))
+
 
 st.set_page_config(layout="wide")
 st.title("Local search plot")
@@ -48,7 +51,10 @@ for i, area_name in enumerate(area_names):
         df = df.query("is_in == 0")
 
         map = folium.Map(location=CENTER_POSITIONS[area_name], zoom_start=ZOOM[area_name], crs="EPSG3857")
+        contour_data = CONTOURS[area_name]
         add_spot_markers(df, map)
-        add_contour_lines(CONTOURS[area_name], map)
+        add_contour_lines(contour_data, map)
+        st.header(area_name)
+        st.text(contour_data.description)
         folium_static(map)
         st.dataframe(df, use_container_width=True)

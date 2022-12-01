@@ -10,7 +10,12 @@ YAHOO_API_URL = "https://map.yahooapis.jp/search/local/V1/localSearch"
 
 
 @st.experimental_memo
-def retrieve_local_search_result(query: str, latlon: tuple[int, int], dist: int) -> dict[Any]:
+def retrieve_local_search_result(area_name: str, latlon: tuple[int, int], dist: int) -> dict[Any]:
+    json = _request_yahoo_local_search(area_name, latlon, dist)
+    return _to_dataframe(json, area_name)
+
+
+def _request_yahoo_local_search(query: str, latlon: tuple[int, int], dist: int) -> dict[Any]:
     params = {
         "appid": YAHOO_APPLICATION_ID,
         "output": "json",
@@ -21,7 +26,7 @@ def retrieve_local_search_result(query: str, latlon: tuple[int, int], dist: int)
         "detail": "standard",
         "results": 100,
         "start": 1}
-    print("requesting 1...")
+    print(f"requesting start ({query})")
     r = requests.get(YAHOO_API_URL, params=params)
     r.raise_for_status()
 
@@ -38,7 +43,7 @@ def retrieve_local_search_result(query: str, latlon: tuple[int, int], dist: int)
     return j
 
 
-def to_dataframe(search_result: dict[Any], area_name: str) -> pd.DataFrame:
+def _to_dataframe(search_result: dict[Any], area_name: str) -> pd.DataFrame:
     rows = []
     for f in search_result["Feature"]:
         address = f["Property"]["Address"].removeprefix("北海道")

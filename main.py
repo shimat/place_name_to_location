@@ -4,7 +4,7 @@ import pandas as pd
 import streamlit as st
 from streamlit_folium import folium_static
 from typing import Any
-from data_loader import retrieve_local_search_result, to_dataframe
+from data_loader import retrieve_local_search_result
 from constants import CENTER_POSITIONS, CONTOURS, SEARCH_DISTANCE, ZOOM
 
 def add_spot_markers(df: pd.DataFrame, map: folium.Map):
@@ -18,6 +18,8 @@ def add_spot_markers(df: pd.DataFrame, map: folium.Map):
 def add_contour_lines(contours: tuple[tuple[tuple[float, float]]], map: folium.Map):
     colormap = ['r', "b", "g", "orange"]
     for contour in contours:
+        if not contour:
+            continue
         folium.ColorLine(
             positions=contour,
             colors=tuple(0 for _ in contour),
@@ -30,20 +32,20 @@ st.set_page_config(layout="wide")
 st.title("Local search plot")
 st.write("""
 <style>
-iframe { width: 1000px; height: 800px; }
+iframe { width: 100%; height: 800px; }
 </style>
 """, unsafe_allow_html=True)
 
-area_names = (("宮の森", "円山", "琴似", "田園調布"))
+area_names = (("宮の森", "円山", "琴似", "北大", "田園調布", "吉祥寺"))
 tabs = st.tabs(area_names)
 
 for i, area_name in enumerate(area_names):
     with tabs[i]:
-        search_result = retrieve_local_search_result(
+        df = retrieve_local_search_result(
             area_name,
             latlon=CENTER_POSITIONS[area_name],
             dist=SEARCH_DISTANCE[area_name])
-        df = to_dataframe(search_result, area_name).query("is_in == 0")
+        df = df.query("is_in == 0")
 
         map = folium.Map(location=CENTER_POSITIONS[area_name], zoom_start=ZOOM[area_name], crs="EPSG3857")
         add_spot_markers(df, map)

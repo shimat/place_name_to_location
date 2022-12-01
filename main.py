@@ -32,14 +32,14 @@ def add_contour_lines(contours: ContourData, map: folium.Map):
 
 
 st.set_page_config(layout="wide")
-st.title("Local search plot")
+st.title("施設名と住所が合わないものを探す")
 st.write("""
 <style>
 iframe { width: 100%; height: 800px; }
 </style>
 """, unsafe_allow_html=True)
 
-area_names = (("宮の森", "円山", "琴似", "北大", "田園調布", "吉祥寺", "軽井沢"))
+area_names = (("宮の森", "円山", "琴似", "北大", "山鼻", "田園調布", "吉祥寺", "軽井沢"))
 tabs = st.tabs(area_names)
 
 for i, area_name in enumerate(area_names):

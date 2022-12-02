@@ -407,7 +407,7 @@ CONTOURS: dict[str, ContourData] = {
         ),
     ),
     "吉祥寺": ContourData(
-        description="武蔵野市 吉祥寺本町・吉祥寺北町・吉祥寺東町・吉祥寺南町 の範囲を表示",
+        description="赤枠は、武蔵野市 吉祥寺本町・吉祥寺北町・吉祥寺東町・吉祥寺南町 の範囲を示す",
         coordinates_list=(
             (
                 (35.720878405464674, 139.5685410720457), # デニーズ吉祥寺北町店

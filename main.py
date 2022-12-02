@@ -39,7 +39,7 @@ iframe { width: 100%; height: 800px; }
 </style>
 """, unsafe_allow_html=True)
 
-area_names = (("宮の森", "円山", "琴似", "北大", "山鼻", "田園調布", "吉祥寺", "軽井沢"))
+area_names = (("宮の森", "二十四軒", "円山", "琴似", "北大", "山鼻", "大麻", "田園調布", "吉祥寺", "軽井沢"))
 tabs = st.tabs(area_names)
 
 for i, area_name in enumerate(area_names):
@@ -48,13 +48,24 @@ for i, area_name in enumerate(area_names):
             area_name,
             latlon=CENTER_POSITIONS[area_name],
             dist=SEARCH_DISTANCE[area_name])
-        df = df.query("is_in == 0")
+        df_outside = df.query("is_in == 0")
 
         map = folium.Map(location=CENTER_POSITIONS[area_name], zoom_start=ZOOM[area_name], crs="EPSG3857")
         contour_data = CONTOURS[area_name]
-        add_spot_markers(df, map)
+        add_spot_markers(df_outside, map)
         add_contour_lines(contour_data, map)
+
         st.header(area_name)
         st.text(contour_data.description)
+        if len(df_outside) / len(df) < 0.5:
+            st.text(f"地域外件数/総件数 = {len(df_outside)}/{len(df)}")
         folium_static(map)
-        st.dataframe(df, use_container_width=True)
+        st.dataframe(df_outside, use_container_width=True)
+        
+st.markdown("""
+-----
+<p>出典:</p>
+<!-- Begin Yahoo! JAPAN Web Services Attribution Snippet -->
+<span style="margin:15px 15px 15px 15px"><a href="https://developer.yahoo.co.jp/sitemap/">Web Services by Yahoo! JAPAN</a></span>
+<!-- End Yahoo! JAPAN Web Services Attribution Snippet -->
+""", unsafe_allow_html=True)

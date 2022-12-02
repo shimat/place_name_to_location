@@ -31,7 +31,7 @@ def add_contour_lines(contours: ContourData, map: folium.Map):
         colormap.append(colormap.pop(0))
 
 
-st.set_page_config(layout="wide")
+st.set_page_config(page_title="施設名と住所が合わないものを探す", layout="wide")
 st.title("施設名と住所が合わないものを探す")
 st.write("""
 <style>

@@ -60,6 +60,7 @@ for i, area_name in enumerate(area_names):
         if len(df_outside) / len(df) < 0.5:
             st.text(f"地域外件数/総件数 = {len(df_outside)}/{len(df)}")
         folium_static(map)
+        st.header("物件一覧")
         st.dataframe(df_outside, use_container_width=True)
         
 st.markdown("""

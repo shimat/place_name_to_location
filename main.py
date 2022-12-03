@@ -35,7 +35,7 @@ st.set_page_config(page_title="施設名と住所が合わないものを探す"
 st.title("施設名と住所が合わないものを探す")
 st.write("""
 <style>
-iframe { width: 100%; height: 800px; }
+iframe { width: 100%; }
 </style>
 """, unsafe_allow_html=True)
 

@@ -39,7 +39,7 @@ iframe { width: 100%; }
 </style>
 """, unsafe_allow_html=True)
 
-area_names = (("宮の森", "二十四軒", "円山", "琴似", "北大", "山鼻", "大麻", "田園調布", "吉祥寺", "軽井沢"))
+area_names = (("宮の森", "二十四軒", "円山", "琴似", "北大", "山鼻", "新札幌/新さっぽろ", "大麻", "田園調布", "吉祥寺", "軽井沢"))
 tabs = st.tabs(area_names)
 
 for i, area_name in enumerate(area_names):

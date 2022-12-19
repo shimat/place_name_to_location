@@ -10,8 +10,14 @@ YAHOO_API_URL = "https://map.yahooapis.jp/search/local/V1/localSearch"
 
 @st.experimental_memo
 def retrieve_local_search_result(area_name: str, latlon: tuple[int, int], dist: int) -> dict[Any]:
-    json = _request_yahoo_local_search(area_name, latlon, dist)
-    return _to_dataframe(json, area_name)
+    all = None
+    for query in area_name.split("/"):
+        result = _request_yahoo_local_search(query, latlon, dist)
+        if all:
+            all["Feature"].extend(result["Feature"])
+        else:
+            all = result
+    return _to_dataframe(all, area_name)
 
 
 def _request_yahoo_local_search(query: str, latlon: tuple[int, int], dist: int) -> dict[Any]:
